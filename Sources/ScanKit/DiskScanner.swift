@@ -51,7 +51,8 @@ public struct DiskScanner: Sendable {
             } else if values.isDirectory == true {
                 if !configuration.isExcluded(entry) { subdirectories.append(entry) }
             } else {
-                let size = Int64(values.totalFileAllocatedSize ?? 0)
+                let reported = Int64(values.totalFileAllocatedSize ?? 0)
+                let size = context.hardLinks.countableSize(of: entry, reportedSize: reported)
                 files.append(FileNode(fileNamed: entry.lastPathComponent, size: size))
                 context.addFile(bytes: size, path: entry.path)
             }

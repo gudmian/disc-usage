@@ -2,6 +2,8 @@ import Foundation
 
 /// Потокобезопасные счётчики скана: прогресс + недоступные пути.
 final class ScanContext: @unchecked Sendable {
+    let hardLinks = HardLinkRegistry()
+
     private let lock = NSLock()
     private var items = 0
     private var bytes: Int64 = 0
