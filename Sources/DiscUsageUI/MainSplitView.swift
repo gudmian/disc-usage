@@ -51,14 +51,7 @@ struct MainSplitView: View {
     }
 }
 
-// Заглушки — заменяются в Task 16 и Task 17 отдельными файлами.
-struct LargeFilesView: View {
-    var body: some View {
-        ContentUnavailableView("Большие файлы", systemImage: "doc.zipper",
-                               description: Text("Появится в Task 16"))
-    }
-}
-
+// Заглушка — заменяется в Task 17 отдельным файлом.
 struct CleanupView: View {
     var body: some View {
         ContentUnavailableView("Очистка", systemImage: "trash",
