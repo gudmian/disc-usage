@@ -69,7 +69,7 @@ Tests/ScanKitTests/*, Tests/CleanupKitTests/*, Tests/DiscUsageUITests/*
 **Interfaces:**
 - Produces: собирающийся пакет с таргетами `ScanKit`, `CleanupKit`, `DiscUsageUI`, `DiscUsage` (exe) и тремя тест-таргетами.
 
-- [ ] **Step 1: Написать Package.swift и заготовки**
+- [x] **Step 1: Написать Package.swift и заготовки**
 
 `Package.swift`:
 
@@ -133,12 +133,12 @@ import Testing
 }
 ```
 
-- [ ] **Step 2: Проверить сборку и тесты**
+- [x] **Step 2: Проверить сборку и тесты**
 
 Run: `swift build && swift test`
 Expected: `Build complete!`, тест `packageCompiles` PASS.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add Package.swift .gitignore Sources Tests
@@ -156,7 +156,7 @@ git commit -m "chore: SPM-скаффолд DiscUsage (ScanKit, CleanupKit, DiscU
 **Interfaces:**
 - Produces: `FileNode` — immutable Sendable класс: `init(fileNamed:size:)`, `init(inaccessibleDirectoryNamed:)`, `init(directoryNamed:children:)` (сортирует детей по size desc и суммирует size), `child(named:) -> FileNode?`, `Kind { file, directory, inaccessibleDirectory }`, Identifiable (ObjectIdentifier), Equatable (===).
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `Tests/ScanKitTests/FileNodeTests.swift`:
 
@@ -185,12 +185,12 @@ import Testing
 }
 ```
 
-- [ ] **Step 2: Запустить — убедиться, что падает**
+- [x] **Step 2: Запустить — убедиться, что падает**
 
 Run: `swift test --filter FileNodeTests`
 Expected: FAIL / ошибка компиляции `cannot find 'FileNode' in scope`.
 
-- [ ] **Step 3: Минимальная реализация**
+- [x] **Step 3: Минимальная реализация**
 
 `Sources/ScanKit/FileNode.swift`:
 
@@ -241,12 +241,12 @@ public final class FileNode: Sendable, Identifiable, Equatable {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter FileNodeTests`
 Expected: 2 tests PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/ScanKit/FileNode.swift Tests/ScanKitTests/FileNodeTests.swift
@@ -264,7 +264,7 @@ git commit -m "feat: FileNode — иммутабельное дерево раз
 **Interfaces:**
 - Produces: `ScanConfiguration(rootURL:excludedPaths:)`, `.wholeDisk()`, `isExcluded(_ url: URL) -> Bool`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `Tests/ScanKitTests/ScanConfigurationTests.swift`:
 
@@ -289,11 +289,11 @@ import Testing
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'ScanConfiguration'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'ScanConfiguration'`)
 
 Run: `swift test --filter ScanConfigurationTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/ScanKit/ScanConfiguration.swift`:
 
@@ -331,11 +331,11 @@ public struct ScanConfiguration: Sendable {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter ScanConfigurationTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/ScanKit/ScanConfiguration.swift Tests/ScanKitTests/ScanConfigurationTests.swift
@@ -354,7 +354,7 @@ git commit -m "feat: ScanConfiguration с исключениями firmlink/Volu
 - Consumes: `FileNode`, `ScanConfiguration`.
 - Produces: `ScanProgress(scannedItems:totalBytes:currentPath:)`; `ScanResult(root:inaccessiblePaths:)`; `DiskScanner(progressInterval: Int = 2048)` c `scan(configuration:onProgress:) async throws -> ScanResult` (`onProgress: (@Sendable (ScanProgress) -> Void)? = nil`). Внутренний `ScanContext` (счётчики + inaccessible, NSLock).
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/ScanKitTests/Fixture.swift`:
 
@@ -464,11 +464,11 @@ import Testing
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'DiskScanner'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'DiskScanner'`)
 
 Run: `swift test --filter DiskScannerTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/ScanKit/ScanProgress.swift`:
 
@@ -613,12 +613,12 @@ public struct DiskScanner: Sendable {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter DiskScannerTests`
 Expected: 4 tests PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/ScanKit Tests/ScanKitTests
@@ -637,7 +637,7 @@ git commit -m "feat: DiskScanner — параллельный обход с уч
 **Interfaces:**
 - Produces: `HardLinkRegistry.countableSize(of url: URL, reportedSize: Int64) -> Int64` — размер при первом вхождении multi-link файла, 0 при повторах.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/ScanKitTests/DiskScannerConcurrencyTests.swift`:
 
@@ -712,12 +712,12 @@ final class Locked<Value>: @unchecked Sendable {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL**
+- [x] **Step 2: Запустить — FAIL**
 
 Run: `swift test --filter DiskScannerConcurrencyTests`
 Expected: `hardLinkedFileIsCountedOnce` падает (размер задвоен); остальные могут пройти.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/ScanKit/HardLinkRegistry.swift`:
 
@@ -768,12 +768,12 @@ final class HardLinkRegistry: @unchecked Sendable {
             }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter "DiskScannerTests|DiskScannerConcurrencyTests"`
 Expected: все PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/ScanKit Tests/ScanKitTests
@@ -792,7 +792,7 @@ git commit -m "feat: дедупликация hardlink, прогресс и от
 **Interfaces:**
 - Produces: `TreeRebuilder.replacing(nodeAt path: [String], with: FileNode, in root: FileNode) -> FileNode?`; `TreeRebuilder.removingNode(at path: [String], in root: FileNode) -> FileNode?` (nil = путь не найден, дерево не менять); `DiskScanner.rescanSubtree(at relativePath: [String], in result: ScanResult, configuration: ScanConfiguration) async throws -> ScanResult`. Пути — имена узлов от корня, БЕЗ имени корня. После удаления с диска рескань РОДИТЕЛЯ удалённого элемента.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/ScanKitTests/TreeRebuilderTests.swift`:
 
@@ -846,11 +846,11 @@ private func sampleTree() -> FileNode {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'TreeRebuilder'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'TreeRebuilder'`)
 
 Run: `swift test --filter TreeRebuilderTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/ScanKit/TreeRebuilder.swift`:
 
@@ -908,11 +908,11 @@ extension DiskScanner {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter TreeRebuilderTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/ScanKit Tests/ScanKitTests
@@ -930,7 +930,7 @@ git commit -m "feat: TreeRebuilder и точечный рескан поддер
 **Interfaces:**
 - Produces: `LargeFileEntry { path: String; size: Int64; id: String }` (Sendable, Identifiable, Equatable); `LargeFileCollector.topFiles(in root: FileNode, rootPath: String, limit: Int = 100, minimumSize: Int64) -> [LargeFileEntry]` — отсортировано по size desc. Обход отсекает директории меньше minimumSize (файл ≥ minimumSize не может лежать в директории меньшего размера).
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `Tests/ScanKitTests/LargeFileCollectorTests.swift`:
 
@@ -962,11 +962,11 @@ import Testing
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'LargeFileCollector'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'LargeFileCollector'`)
 
 Run: `swift test --filter LargeFileCollectorTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/ScanKit/LargeFileCollector.swift`:
 
@@ -1009,11 +1009,11 @@ public enum LargeFileCollector {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter LargeFileCollectorTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/ScanKit/LargeFileCollector.swift Tests/ScanKitTests/LargeFileCollectorTests.swift
@@ -1038,7 +1038,7 @@ git commit -m "feat: LargeFileCollector — топ тяжёлых файлов �
   - `CleanupItem(rule:url:size:command:deletable:)` (Identifiable, Equatable; поля `id, ruleID, title, category, safety, url: URL?, size, permanentOnly, enabledByDefault, deletable, command`); `title` = lastPathComponent url либо rule.title.
   - `PathResolver.resolve(_ pattern: PathPattern, environment: CleanupEnvironment) -> [URL]` — только существующие пути, отсортированы.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/CleanupKitTests/PathResolverTests.swift`:
 
@@ -1113,11 +1113,11 @@ enum Fixture {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'CleanupEnvironment'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'CleanupEnvironment'`)
 
 Run: `swift test --filter PathResolverTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/CleanupKit/CleanupEnvironment.swift`:
 
@@ -1274,11 +1274,11 @@ public enum PathResolver {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter PathResolverTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/CleanupKit Tests/CleanupKitTests
@@ -1301,7 +1301,7 @@ git commit -m "feat: модели CleanupKit и PathResolver с '*'-шаблон
   - `JunkScanner(environment: CleanupEnvironment = .live, sizer: any DirectorySizing = FileSystemSizer())` c `scan(rules: [CleanupRule] = CleanupRules.all) async -> [CleanupItem]`. Для `deleteContentsOnly`-правил — item на каждого ребёнка директории; для остальных — item на разрешённый путь; для `command`-правил — один item с `url == nil, size == 0`.
   - `CleanupPlanner.deduplicate(_ items: [CleanupItem]) -> [CleanupItem]` — убирает точные дубли путей и элементы, лежащие внутри других элементов.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/CleanupKitTests/JunkScannerTests.swift`:
 
@@ -1387,11 +1387,11 @@ import Testing
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'FileSystemSizer'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'FileSystemSizer'`)
 
 Run: `swift test --filter JunkScannerTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/CleanupKit/DirectorySizing.swift`:
 
@@ -1645,12 +1645,12 @@ public enum CleanupRules {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter JunkScannerTests`
 Expected: 5 tests PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/CleanupKit Tests/CleanupKitTests
@@ -1669,7 +1669,7 @@ git commit -m "feat: таблица правил очистки, FileSystemSizer
 - Consumes: `CleanupRules.localizations`, `CleanupItem`, `DirectorySizing`.
 - Produces: `SignatureChecking { func isSigned(_ url: URL) -> Bool }`; `CodesignChecker()` (через `/usr/bin/codesign --verify`); `LprojScanner(applicationsDirectory: URL = URL(filePath: "/Applications"), keptLanguages: Set<String> = LprojScanner.defaultKeptLanguages(), signatureChecker: any SignatureChecking = CodesignChecker(), sizer: any DirectorySizing = FileSystemSizer())` c `scan() async -> [CleanupItem]`. Подписанный бандл → `deletable: false`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/CleanupKitTests/LprojScannerTests.swift`:
 
@@ -1716,11 +1716,11 @@ private struct StubSignatureChecker: SignatureChecking {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'LprojScanner'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'LprojScanner'`)
 
 Run: `swift test --filter LprojScannerTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/CleanupKit/LprojScanner.swift`:
 
@@ -1808,11 +1808,11 @@ public struct LprojScanner: Sendable {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter LprojScannerTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/CleanupKit/LprojScanner.swift Tests/CleanupKitTests/LprojScannerTests.swift
@@ -1835,7 +1835,7 @@ git commit -m "feat: LprojScanner — локализации с защитой �
   - `CleanupFailure { item: CleanupItem; message: String }`; `CleanupReport { deleted: [CleanupItem]; failed: [CleanupFailure]; freedBytes: Int64 }`.
   - `CleanupExecutor(remover: any FileRemoving = SystemFileRemover(), processRunner: any ProcessRunning = SystemProcessRunner())` c `execute(items: [CleanupItem], permanently: Bool) async -> CleanupReport`. Ошибка одного элемента не прерывает пакет; `permanentOnly` всегда удаляется навсегда; `deletable == false` попадает в failed.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/CleanupKitTests/CleanupExecutorTests.swift`:
 
@@ -1952,11 +1952,11 @@ private func makeItem(
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'CleanupExecutor'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'CleanupExecutor'`)
 
 Run: `swift test --filter CleanupExecutorTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/CleanupKit/CleanupExecutor.swift`:
 
@@ -2069,12 +2069,12 @@ public struct CleanupExecutor: Sendable {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter CleanupExecutorTests`
 Expected: 4 tests PASS. Затем полный прогон: `swift test` — всё зелёное.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/CleanupKit/CleanupExecutor.swift Tests/CleanupKitTests/CleanupExecutorTests.swift
@@ -2092,7 +2092,7 @@ git commit -m "feat: CleanupExecutor — пакетное удаление с о
 **Interfaces:**
 - Produces: `TreemapLayout.squarify(values: [Double], in rect: CGRect) -> [CGRect]`. Вход ДОЛЖЕН быть отсортирован по убыванию (дети FileNode уже такие); выход выровнен по индексам входа; нулевые значения дают нулевые прямоугольники.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/DiscUsageUITests/TreemapLayoutTests.swift`:
 
@@ -2140,11 +2140,11 @@ private let container = CGRect(x: 0, y: 0, width: 400, height: 300)
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'TreemapLayout'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'TreemapLayout'`)
 
 Run: `swift test --filter TreemapLayoutTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/DiscUsageUI/TreemapLayout.swift`:
 
@@ -2230,11 +2230,11 @@ public enum TreemapLayout {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter TreemapLayoutTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/DiscUsageUI/TreemapLayout.swift Tests/DiscUsageUITests/TreemapLayoutTests.swift
@@ -2253,7 +2253,7 @@ git commit -m "feat: squarified-раскладка для treemap"
 - Consumes: `FileNode` (ScanKit).
 - Produces: `ByteFormatter.string(_ bytes: Int64) -> String`; `ContentCategory { media, code, archive, document, caches, directory, other }`; `NodeColor.category(for node: FileNode) -> ContentCategory`, `NodeColor.color(for: ContentCategory) -> Color`; `FullDiskAccessChecker(probePaths: [String] = <дефолт>)` c `hasFullDiskAccess() -> Bool`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/DiscUsageUITests/UtilitiesTests.swift`:
 
@@ -2290,11 +2290,11 @@ import ScanKit
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'ByteFormatter'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'ByteFormatter'`)
 
 Run: `swift test --filter UtilitiesTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/DiscUsageUI/ByteFormatter.swift`:
 
@@ -2401,11 +2401,11 @@ public struct FullDiskAccessChecker: Sendable {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter UtilitiesTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/DiscUsageUI Tests/DiscUsageUITests
@@ -2432,7 +2432,7 @@ git commit -m "feat: форматтер размеров, цвета катег�
   - `removeNodes(atAbsolutePaths: [String])` — выкидывает узлы из дерева через `TreeRebuilder.removingNode`.
   - `rescanCurrentDirectory()` — точечный рескан текущей директории в фоне.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/DiscUsageUITests/AppStateTests.swift`:
 
@@ -2514,11 +2514,11 @@ private func finishedState(root: URL) async throws -> AppState {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'AppState'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'AppState'`)
 
 Run: `swift test --filter AppStateTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/DiscUsageUI/AppState.swift`:
 
@@ -2653,11 +2653,11 @@ public final class AppState {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test --filter AppStateTests`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Sources/DiscUsageUI/AppState.swift Tests/DiscUsageUITests/AppStateTests.swift
@@ -2678,7 +2678,7 @@ UI-таск: логика уже покрыта тестами (T12–T14), вь
 - Consumes: `AppState`, `TreemapLayout`, `NodeColor`, `ByteFormatter`, `SystemFileRemover` (CleanupKit).
 - Produces: `public struct RootView: View` (единственная публичная вьюха — точка входа для exe); внутренние `MainSplitView`, `OverviewView`, `BreadcrumbBar`, `TreemapView`, `TreemapCell` + временные заглушки `LargeFilesView`, `CleanupView` (заменяются в T16/T17).
 
-- [ ] **Step 1: Реализация**
+- [x] **Step 1: Реализация**
 
 `Sources/DiscUsage/DiscUsageApp.swift` (заменить целиком):
 
@@ -2994,12 +2994,12 @@ struct TreemapCell: View {
 }
 ```
 
-- [ ] **Step 2: Собрать и прогнать тесты**
+- [x] **Step 2: Собрать и прогнать тесты**
 
 Run: `swift build && swift test`
 Expected: сборка и все тесты зелёные.
 
-- [ ] **Step 3: Ручная проверка**
+- [x] **Step 3: Ручная проверка**
 
 Run: `swift run DiscUsage` (скан всего диска без FDA даст много «нет доступа» — для проверки достаточно домашней папки; альтернативно временно поменять конфигурацию не нужно — просто убедиться, что:)
 - окно открывается, сайдбар из трёх разделов;
@@ -3010,7 +3010,7 @@ Run: `swift run DiscUsage` (скан всего диска без FDA даст �
 
 Завершить приложение Cmd+Q.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add Sources/DiscUsage Sources/DiscUsageUI
@@ -3030,7 +3030,7 @@ git commit -m "feat: каркас приложения — сайдбар, об�
 - Consumes: `LargeFileCollector`, `LargeFileEntry`, `FileNode`, `SystemFileRemover`, `AppState.removeNodes`.
 - Produces (`@MainActor @Observable public final class LargeFilesViewModel`): `minimumSize: Int64` (= 50 МБ), `entries: [LargeFileEntry]` (private(set)), `selectedPaths: Set<String>`, `refresh(root: FileNode?, rootPath: String)`, `selectedTotalBytes: Int64`, `entriesToDelete() -> [LargeFileEntry]`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/DiscUsageUITests/LargeFilesViewModelTests.swift`:
 
@@ -3070,11 +3070,11 @@ private func sampleTree() -> FileNode {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'LargeFilesViewModel'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'LargeFilesViewModel'`)
 
 Run: `swift test --filter LargeFilesViewModelTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/DiscUsageUI/LargeFilesViewModel.swift`:
 
@@ -3227,12 +3227,12 @@ struct LargeFilesView: View {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test && swift build`
 Expected: все тесты зелёные, сборка успешна.
 
-- [ ] **Step 5: Ручная проверка и Commit**
+- [x] **Step 5: Ручная проверка и Commit**
 
 Run: `swift run DiscUsage` — просканировать, открыть «Большие файлы»: таблица заполнена, фильтр размера меняет список, чекбоксы считают сумму на кнопке.
 
@@ -3259,7 +3259,7 @@ git commit -m "feat: экран больших файлов с фильтром 
   - `items(in: CleanupCategory) -> [CleanupItem]`, `totalSize(in: CleanupCategory) -> Int64`, `selectedItems: [CleanupItem]`, `selectedTotalBytes: Int64`, `confirmationMessage: String`.
   - `executeSelected() async -> CleanupReport` — удаляет, выкидывает удалённые из `items`/`selectedIDs`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `Tests/DiscUsageUITests/CleanupViewModelTests.swift`:
 
@@ -3341,11 +3341,11 @@ private func makeFixtureHome() throws -> URL {
 }
 ```
 
-- [ ] **Step 2: Запустить — FAIL** (`cannot find 'CleanupViewModel'`)
+- [x] **Step 2: Запустить — FAIL** (`cannot find 'CleanupViewModel'`)
 
 Run: `swift test --filter CleanupViewModelTests`
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `Sources/DiscUsageUI/CleanupViewModel.swift`:
 
@@ -3558,11 +3558,11 @@ struct CleanupItemRow: View {
 }
 ```
 
-- [ ] **Step 4: Запустить — PASS**
+- [x] **Step 4: Запустить — PASS**
 
 Run: `swift test && swift build`
 
-- [ ] **Step 5: Ручная проверка и Commit**
+- [x] **Step 5: Ручная проверка и Commit**
 
 Run: `swift run DiscUsage` — вкладка «Очистка»: «Найти мусор» заполняет категории; история/cookies и Archives сняты по умолчанию; диалог подтверждения содержит объём; НЕ выполняйте реальную очистку на живой машине при проверке (или выбери один маленький кэш).
 
@@ -3583,7 +3583,7 @@ git commit -m "feat: экран очистки — категории, бейд�
 - Consumes: `FullDiskAccessChecker`.
 - Produces: гейт FDA в `RootView`; `Scripts/build-app.sh` → `build/DiscUsage.app` (ad-hoc подпись).
 
-- [ ] **Step 1: OnboardingView и гейт в RootView**
+- [x] **Step 1: OnboardingView и гейт в RootView**
 
 `Sources/DiscUsageUI/OnboardingView.swift`:
 
@@ -3649,7 +3649,7 @@ public struct RootView: View {
 }
 ```
 
-- [ ] **Step 2: Скрипт сборки .app**
+- [x] **Step 2: Скрипт сборки .app**
 
 `Scripts/Info.plist`:
 
@@ -3702,7 +3702,7 @@ echo "Полный доступ к диску → добавить $PWD/$APP"
 Run: `chmod +x Scripts/build-app.sh && ./Scripts/build-app.sh`
 Expected: `Готово: build/DiscUsage.app`; `codesign --verify build/DiscUsage.app` — без ошибок; `open build/DiscUsage.app` — приложение запускается (при первом запуске показывает онбординг FDA, если доступ не выдан).
 
-- [ ] **Step 3: README**
+- [x] **Step 3: README**
 
 `README.md`:
 
@@ -3741,7 +3741,7 @@ SPM-пакет: `ScanKit` (скан диска), `CleanupKit` (правила о
 Дизайн: `docs/superpowers/specs/2026-07-08-discusage-design.md`.
 ```
 
-- [ ] **Step 4: Полные тесты + покрытие**
+- [x] **Step 4: Полные тесты + покрытие**
 
 ```bash
 swift test --enable-code-coverage
@@ -3754,7 +3754,7 @@ xcrun llvm-cov report \
 
 Expected: все тесты PASS; для файлов ScanKit и CleanupKit покрытие строк ≥ 80% (UI-вьюхи исключены). Если ниже — дописать тесты на непокрытые ветки (обычно это error-пути) до порога.
 
-- [ ] **Step 5: Финальная ручная проверка и Commit**
+- [x] **Step 5: Финальная ручная проверка и Commit**
 
 Чеклист на собранном `build/DiscUsage.app` (после выдачи FDA):
 
