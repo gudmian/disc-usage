@@ -8,6 +8,11 @@ public struct FileSystemSizer: DirectorySizing {
     public init() {}
 
     public func size(of url: URL) async -> Int64 {
+        walkSize(of: url)
+    }
+
+    // Синхронный обход: NSEnumerator нельзя итерировать из async-контекста.
+    private func walkSize(of url: URL) -> Int64 {
         let keys: Set<URLResourceKey> = [.totalFileAllocatedSizeKey, .isRegularFileKey]
         if let values = try? url.resourceValues(forKeys: keys), values.isRegularFile == true {
             return Int64(values.totalFileAllocatedSize ?? 0)
