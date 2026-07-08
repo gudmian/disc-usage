@@ -50,11 +50,3 @@ struct MainSplitView: View {
         }
     }
 }
-
-// Заглушка — заменяется в Task 17 отдельным файлом.
-struct CleanupView: View {
-    var body: some View {
-        ContentUnavailableView("Очистка", systemImage: "trash",
-                               description: Text("Появится в Task 17"))
-    }
-}
