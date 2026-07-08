@@ -28,6 +28,25 @@ public struct DiskScanner: Sendable {
         return ScanResult(root: root, inaccessiblePaths: context.inaccessiblePaths)
     }
 
+    /// Пересканирует поддиректорию и возвращает новое дерево с заменённым
+    /// поддеревом. После удаления элемента с диска вызывайте для его РОДИТЕЛЯ.
+    public func rescanSubtree(
+        at relativePath: [String],
+        in result: ScanResult,
+        configuration: ScanConfiguration
+    ) async throws -> ScanResult {
+        let url = relativePath.reduce(configuration.rootURL) {
+            $0.appendingPathComponent($1)
+        }
+        let subConfiguration = ScanConfiguration(
+            rootURL: url, excludedPaths: configuration.excludedPaths)
+        let subResult = try await scan(configuration: subConfiguration)
+        guard let newRoot = TreeRebuilder.replacing(
+            nodeAt: relativePath, with: subResult.root, in: result.root)
+        else { return result }
+        return ScanResult(root: newRoot, inaccessiblePaths: result.inaccessiblePaths)
+    }
+
     private func scanDirectory(
         _ url: URL, configuration: ScanConfiguration, context: ScanContext
     ) async throws -> FileNode {
