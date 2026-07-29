@@ -22,6 +22,7 @@ public struct DiskScanner: Sendable {
         onProgress: (@Sendable (ScanProgress) -> Void)? = nil
     ) async throws -> ScanResult {
         let context = ScanContext(onProgress: onProgress, progressInterval: progressInterval)
+        _ = context.visitedDirectories.markVisited(configuration.rootURL)
         let root = try await scanDirectory(
             configuration.rootURL, configuration: configuration, context: context)
         context.emitFinal(path: configuration.rootURL.path)
@@ -51,7 +52,9 @@ public struct DiskScanner: Sendable {
         _ url: URL, configuration: ScanConfiguration, context: ScanContext
     ) async throws -> FileNode {
         try Task.checkCancellation()
-        let keys: [URLResourceKey] = [.isDirectoryKey, .isSymbolicLinkKey, .totalFileAllocatedSizeKey]
+        let keys: [URLResourceKey] = [
+            .isDirectoryKey, .isSymbolicLinkKey, .isVolumeKey, .totalFileAllocatedSizeKey,
+        ]
         let entries: [URL]
         do {
             entries = try FileManager.default.contentsOfDirectory(
@@ -68,7 +71,12 @@ public struct DiskScanner: Sendable {
             if values.isSymbolicLink == true {
                 files.append(FileNode(fileNamed: entry.lastPathComponent, size: 0))
             } else if values.isDirectory == true {
-                if !configuration.isExcluded(entry) { subdirectories.append(entry) }
+                // Корень чужого тома (симулятор, cryptex, внешний диск) не входит
+                // в счёт; реестр отсекает повторный обход алиасов (/.nofollow).
+                if values.isVolume != true, !configuration.isExcluded(entry),
+                    context.visitedDirectories.markVisited(entry) {
+                    subdirectories.append(entry)
+                }
             } else {
                 let reported = Int64(values.totalFileAllocatedSize ?? 0)
                 let size = context.hardLinks.countableSize(of: entry, reportedSize: reported)

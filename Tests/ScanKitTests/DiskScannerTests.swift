@@ -57,6 +57,36 @@ import Testing
     #expect(open.size > 0)
 }
 
+/// Смонтированные тома (симуляторы, cryptex, внешние диски) не входят в счёт:
+/// их содержимое не занимает место на сканируемом диске. /System/Volumes
+/// есть на каждой современной macOS — Preboot/VM всегда смонтированы.
+@Test func otherVolumeRootsAreNotEntered() async throws {
+    let config = ScanConfiguration(
+        rootURL: URL(filePath: "/System/Volumes"),
+        excludedPaths: ["/System/Volumes/Data"])
+
+    let result = try await DiskScanner().scan(configuration: config)
+
+    #expect(result.root.child(named: "Preboot") == nil)
+    #expect(result.root.child(named: "VM") == nil)
+}
+
+/// Реестр посещённых каталогов живёт внутри одного скана: повторный скан
+/// того же корня должен дать тот же результат, а не нули.
+@Test func repeatedScansAreIndependent() async throws {
+    let root = try Fixture.makeTree(["a/one.dat": 10_000, "b/two.dat": 4_096])
+    defer { try? FileManager.default.removeItem(at: root) }
+    let scanner = DiskScanner()
+    let configuration = ScanConfiguration(rootURL: root)
+
+    let first = try await scanner.scan(configuration: configuration)
+    let second = try await scanner.scan(configuration: configuration)
+
+    #expect(first.root.size > 0)
+    #expect(second.root.size == first.root.size)
+    #expect(second.root.children.count == first.root.children.count)
+}
+
 @Test func excludedPathsAreSkipped() async throws {
     let root = try Fixture.makeTree(["keep/a.dat": 4_096, "skip/b.dat": 4_096])
     defer { try? FileManager.default.removeItem(at: root) }

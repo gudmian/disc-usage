@@ -11,6 +11,13 @@ import Testing
     #expect(!config.isExcluded(URL(filePath: "/Users")))
 }
 
+@Test func wholeDiskExcludesMagicRootDirectories() {
+    let config = ScanConfiguration.wholeDisk()
+    #expect(config.isExcluded(URL(filePath: "/.nofollow")))
+    #expect(config.isExcluded(URL(filePath: "/.resolve")))
+    #expect(config.isExcluded(URL(filePath: "/.vol")))
+}
+
 @Test func customExclusionsAreStandardized() {
     let config = ScanConfiguration(rootURL: URL(filePath: "/tmp"), excludedPaths: ["/tmp/skip/"])
     #expect(config.isExcluded(URL(filePath: "/tmp/skip")))

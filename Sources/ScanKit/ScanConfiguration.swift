@@ -10,7 +10,8 @@ public struct ScanConfiguration: Sendable {
     }
 
     /// Скан всего диска: исключены firmlink-точки APFS (иначе двойной счёт),
-    /// внешние тома и /dev.
+    /// внешние тома, /dev и магические каталоги ядра в корне (/.nofollow отдаёт
+    /// зеркало всей иерархии — без исключения диск считается дважды).
     public static func wholeDisk() -> ScanConfiguration {
         ScanConfiguration(rootURL: URL(filePath: "/"), excludedPaths: [
             "/System/Volumes/Data",
@@ -22,6 +23,9 @@ public struct ScanConfiguration: Sendable {
             "/System/Volumes/xarts",
             "/Volumes",
             "/dev",
+            "/.nofollow",
+            "/.resolve",
+            "/.vol",
         ])
     }
 
