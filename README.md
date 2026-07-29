@@ -13,17 +13,52 @@
 
 ## Сборка
 
+### Требования
+
+- macOS 15 (Sequoia) или новее
+- Swift 6.0+ (Xcode 16 или новее, либо отдельный toolchain с swift.org)
+
+Проверить toolchain: `swift --version` — должно быть `swift-driver version: ... 6.0`
+или выше.
+
+### Сборка .app
+
 ```bash
-./Scripts/build-app.sh   # → build/DiscUsage.app
+git clone https://github.com/gudmian/disc-usage.git
+cd disc-usage
+./Scripts/build-app.sh
 ```
 
-Для разработки: `swift run DiscUsage`; тесты: `swift test`.
+Скрипт делает три вещи: `swift build -c release`, собирает бандл
+`build/DiscUsage.app` (исполняемый файл + `Scripts/Info.plist`) и подписывает
+его ad-hoc подписью (`codesign --sign -`). Каталог `build/` в `.gitignore` —
+артефакты не версионируются.
+
+Готовое приложение можно перенести в `/Applications`:
+
+```bash
+cp -R build/DiscUsage.app /Applications/
+```
+
+### Разработка
+
+```bash
+swift run DiscUsage          # запуск из исходников (debug)
+swift test                   # все тесты (Swift Testing)
+swift test --filter ScanKit   # тесты одного таргета
+swift build -c release       # только сборка релизного бинарника
+```
+
+При запуске через `swift run` бандла нет, поэтому Full Disk Access выдаётся
+терминалу — для проверки полного скана диска собирайте `.app`.
 
 ## Full Disk Access
 
 Приложению нужен «Полный доступ к диску»: Системные настройки →
 Конфиденциальность и безопасность → Полный доступ к диску → добавьте
-`build/DiscUsage.app`. Без него часть диска будет видна как «нет доступа».
+собранный `DiscUsage.app` (из `build/` или `/Applications`). Без него часть
+диска будет видна как «нет доступа». После перемещения `.app` разрешение нужно
+выдать заново — система привязывает его к конкретному пути.
 
 ## Архитектура
 

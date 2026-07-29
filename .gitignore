@@ -1,4 +1,8 @@
+# Артефакты сборки: .build — кэш SwiftPM, build — собранный .app
 .build/
 build/
 .swiftpm/
 .DS_Store
+
+# Локальные конфиги инструментов
+.serena/
