@@ -10,6 +10,7 @@ public enum CleanupCategory: String, CaseIterable, Sendable {
     case developerJunk
     case browserData
     case miscellaneous
+    case appLeftovers
 }
 
 public struct PathPattern: Sendable {
