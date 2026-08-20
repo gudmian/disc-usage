@@ -6,6 +6,7 @@ extension AppState.SidebarSection {
         case .overview: "Обзор"
         case .largeFiles: "Большие файлы"
         case .cleanup: "Очистка"
+        case .apps: "Приложения"
         }
     }
 
@@ -14,6 +15,7 @@ extension AppState.SidebarSection {
         case .overview: "chart.pie"
         case .largeFiles: "doc.zipper"
         case .cleanup: "trash"
+        case .apps: "app.badge.checkmark"
         }
     }
 }
@@ -33,6 +35,7 @@ struct MainSplitView: View {
             case .overview: OverviewView()
             case .largeFiles: LargeFilesView()
             case .cleanup: CleanupView()
+            case .apps: AppsView()
             }
         }
         .navigationTitle("DiscUsage")

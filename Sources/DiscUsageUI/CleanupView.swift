@@ -8,6 +8,7 @@ extension CleanupCategory {
         case .developerJunk: "Мусор разработчика"
         case .browserData: "Браузеры"
         case .miscellaneous: "Локализации и прочее"
+        case .appLeftovers: "Приложения"
         }
     }
 }

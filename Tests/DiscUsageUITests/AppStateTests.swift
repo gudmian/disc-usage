@@ -76,3 +76,7 @@ private func finishedState(root: URL) async throws -> AppState {
     // breadcrumb пере-резолвился на новый узел с тем же именем
     #expect(state.currentNode === newDocs)
 }
+
+@Test func sidebarSectionsIncludeApps() {
+    #expect(AppState.SidebarSection.allCases.contains(.apps))
+}
