@@ -13,7 +13,7 @@ public final class AppState {
     }
 
     public enum SidebarSection: String, CaseIterable, Identifiable, Sendable {
-        case overview, largeFiles, cleanup
+        case overview, largeFiles, cleanup, apps
         public var id: String { rawValue }
     }
 
