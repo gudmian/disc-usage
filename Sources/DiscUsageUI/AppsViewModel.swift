@@ -9,6 +9,8 @@ public final class AppsViewModel {
     public private(set) var apps: [AppInfo] = []
     public var selectedAppID: String?
     public private(set) var isScanningApps = false
+    public private(set) var scanProgressText: String?
+    public private(set) var unreadableDirectories: [URL] = []
     public private(set) var leftoverItems: [CleanupItem] = []
     public var selectedLeftoverIDs: Set<String> = []
     public private(set) var isScanningLeftovers = false
@@ -34,12 +36,28 @@ public final class AppsViewModel {
 
     public var selectedApp: AppInfo? { apps.first { $0.id == selectedAppID } }
 
+    public var discoveryWarning: String? {
+        guard !unreadableDirectories.isEmpty else { return nil }
+        let paths = unreadableDirectories.map(\.path).joined(separator: ", ")
+        return "Не удалось прочитать: \(paths)"
+    }
+
     public func scanApps() async {
         isScanningApps = true
-        defer { isScanningApps = false }
-        let found = await discovery.scan()
+        scanProgressText = "Ищем приложения…"
+        defer {
+            isScanningApps = false
+            scanProgressText = nil
+        }
+        let result = await discovery.scan(onProgress: { [weak self] progress in
+            Task { @MainActor [weak self] in
+                self?.scanProgressText = "Найдено \(progress.scanned) из \(progress.total)…"
+            }
+        })
+        unreadableDirectories = result.unreadableDirectories
+        scanProgressText = "Проверяем Homebrew…"
         let tokens = await caskDetector.caskTokensByAppPath()
-        apps = found
+        apps = result.apps
             .map { $0.withHomebrewToken(tokens[$0.url.path]) }
             .sorted { $0.size > $1.size }
     }

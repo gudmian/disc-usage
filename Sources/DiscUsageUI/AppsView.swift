@@ -19,8 +19,17 @@ struct AppsView: View {
         }
         .toolbar {
             ToolbarItem {
-                Button("Найти приложения", systemImage: "magnifyingglass") {
+                Button {
                     Task { await viewModel.scanApps() }
+                } label: {
+                    if viewModel.isScanningApps {
+                        HStack(spacing: 6) {
+                            ProgressView().controlSize(.small)
+                            Text(viewModel.scanProgressText ?? "Ищем…")
+                        }
+                    } else {
+                        Label("Найти приложения", systemImage: "magnifyingglass")
+                    }
                 }
                 .disabled(viewModel.isScanningApps)
             }
@@ -41,22 +50,34 @@ struct AppsView: View {
     }
 
     private var appList: some View {
-        Group {
-            if viewModel.apps.isEmpty, !viewModel.isScanningApps {
-                ContentUnavailableView(
-                    "Приложения ещё не искали", systemImage: "app.dashed",
-                    description: Text("Нажмите «Найти приложения»."))
-            } else if viewModel.isScanningApps {
-                ProgressView("Ищем приложения…")
-            } else {
-                List(viewModel.apps, selection: Binding(
-                    get: { viewModel.selectedAppID },
-                    set: { id in
-                        guard let id, let app = viewModel.apps.first(where: { $0.id == id }) else { return }
-                        Task { await viewModel.selectApp(app) }
-                    })
-                ) { app in
-                    AppRow(app: app).tag(app.id)
+        VStack(spacing: 0) {
+            if let warning = viewModel.discoveryWarning {
+                Label(warning, systemImage: "exclamationmark.triangle")
+                    .font(.caption).foregroundStyle(.orange)
+                    .padding(6).frame(maxWidth: .infinity, alignment: .leading)
+            }
+            Group {
+                if viewModel.isScanningApps {
+                    VStack(spacing: 8) {
+                        ProgressView()
+                        Text(viewModel.scanProgressText ?? "Ищем приложения…")
+                            .font(.callout).foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.apps.isEmpty {
+                    ContentUnavailableView(
+                        "Приложения ещё не искали", systemImage: "app.dashed",
+                        description: Text("Нажмите «Найти приложения»."))
+                } else {
+                    List(viewModel.apps, selection: Binding(
+                        get: { viewModel.selectedAppID },
+                        set: { id in
+                            guard let id, let app = viewModel.apps.first(where: { $0.id == id }) else { return }
+                            Task { await viewModel.selectApp(app) }
+                        })
+                    ) { app in
+                        AppRow(app: app).tag(app.id)
+                    }
                 }
             }
         }
