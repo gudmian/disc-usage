@@ -17,23 +17,6 @@ struct AppsView: View {
             detail
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .toolbar {
-            ToolbarItem {
-                Button {
-                    Task { await viewModel.scanApps() }
-                } label: {
-                    if viewModel.isScanningApps {
-                        HStack(spacing: 6) {
-                            ProgressView().controlSize(.small)
-                            Text(viewModel.scanProgressText ?? "Ищем…")
-                        }
-                    } else {
-                        Label("Найти приложения", systemImage: "magnifyingglass")
-                    }
-                }
-                .disabled(viewModel.isScanningApps)
-            }
-        }
         .confirmationDialog(
             viewModel.confirmationMessage, isPresented: $confirming, titleVisibility: .visible
         ) {
@@ -51,6 +34,24 @@ struct AppsView: View {
 
     private var appList: some View {
         VStack(spacing: 0) {
+            HStack {
+                Button {
+                    Task { await viewModel.scanApps() }
+                } label: {
+                    if viewModel.isScanningApps {
+                        HStack(spacing: 6) {
+                            ProgressView().controlSize(.small)
+                            Text(viewModel.scanProgressText ?? "Ищем…")
+                        }
+                    } else {
+                        Label("Найти приложения", systemImage: "magnifyingglass")
+                    }
+                }
+                .disabled(viewModel.isScanningApps)
+                Spacer()
+            }
+            .padding(8)
+            Divider()
             if let warning = viewModel.discoveryWarning {
                 Label(warning, systemImage: "exclamationmark.triangle")
                     .font(.caption).foregroundStyle(.orange)
